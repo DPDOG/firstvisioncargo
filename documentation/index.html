@@ -1,0 +1,214 @@
+<html lang="en-us"><!--<![endif]--><head>
+  <meta charset="utf-8">
+
+  <title>Shipping Master: Shipping,cargo and logisitc management system </title>
+
+  <meta name="author" content="Shakib">
+  <meta name="copyright" content="Enabled">
+  <link rel="stylesheet" href="css/documenter_style.css" media="all">
+  <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/shDocumenter.css" media="screen">
+  <script src="js/jquery.js"></script>
+
+  <style>
+    html {
+      background-color: #FFFFFF;
+      color: #383838;
+    }
+
+    ::-moz-selection {
+      background: #444444;
+      color: #DDDDDD;
+    }
+
+    ::selection {
+      background: #444444;
+      color: #DDDDDD;
+    }
+
+    #documenter_sidebar #documenter_logo {
+      background-image: url(css/img/logo.png);
+    }
+
+    a {
+      color: #0000FF;
+    }
+
+    hr {
+      border-top: 1px solid #EBEBEB;
+      border-bottom: 1px solid #FFFFFF;
+    }
+
+    #documenter_sidebar,
+    #documenter_sidebar ol a {
+      background-color: #2196F3;
+      color: #000;
+    }
+
+    #documenter_sidebar ol a {
+      color: #FFF;
+    }
+
+    #documenter_sidebar ol a:hover {
+      background: #3e3838;
+      color: #DDDDDD;
+      border-top: 1px solid #444444;
+    }
+
+    #documenter_sidebar ol a.current {
+      background: #3e3838;
+      color: #ffffff;
+      border-top: 1px solid #444444;
+    }
+
+    #documenter_copyright {
+      display: block !important;
+      visibility: visible !important;
+    }
+
+    div#documenter_sidebar h4 {
+      text-align: center;
+      font-size: 25px;
+      color: #fff;
+      margin: 50px 0;
+      font-weight: 700;
+    }
+
+    div#documenter_copyright p {
+      text-align: center;
+      color: #f7f7f7;
+      font-size: 14px;
+    }
+    #documenter_sidebar p {
+      color: #f7f7f7;
+      text-align: center;
+    }
+  </style>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div id="documenter_sidebar">
+    <h4>Shipping Master</h4>
+    <ol id="documenter_nav">
+      <li><a class="smoth-scroll" href="#documenter_cover">Start</a></li>
+      <li><a class="smoth-scroll" href="#structure">Files and folders structure</a></li>
+      <li><a class="smoth-scroll" href="#install">Installation</a></li>
+      <li><a class="smoth-scroll" href="#user">Default User</a></li>
+    </ol>
+  </div>
+  <div id="documenter_content">
+    <section id="documenter_cover">
+      <h1>Shipping Master</h1>
+      <h2>Shipping,cargo,dipatch and logistic management system</h2>
+      <hr>
+      <ul>
+        <li>By: Synchrotheme</li>
+        <li>Email: <a href="mailto:info@synchronisebd.com ">info@synchronisebd.com </a></li>
+      </ul>
+      <p>
+        Thank you for purchasing <b>"Shipping Master"</b>.
+        If you have any questions that are beyond the scope of this help file,
+        please feel free to email our support at <a href="mailto:info@synchronisebd.com">info@synchronisebd.com</a> Thanks so much!
+      </p>
+      <p>
+        <b>"Shipping Master"</b> is a fully functional Codeigniter based app and developed with care.
+        It is fully responsive template based on Twitter Bootstrap framework.
+        It also uses open source Admin LTE to design the admin panel
+        Its not only responsive whereas it is retina ready also, now no blurry images on your HiDPI and retina devices.
+      </p>
+      <h2>How to use <b>Shipping Master</b>?</h2>
+      <p>
+        <b>"Shipping Master"</b> is very easy to update and modify, it will adapt your website and brand in no time.
+        Steps for modification and updating are described step by step in this exclusive documentation.
+      </p>
+    </section>
+
+    <section id="structure">
+      <h2>Files and folders structure</h2>
+      <hr>
+      <p>
+        Whole app is divided in to several directories and subdirectories.
+        The whole directory structure is given below.
+        The work of every component and subcomponent can be easily understood by their name.
+      </p>
+      <p>
+      </p>
+      
+    <img src="folderstructure.jpg" alt=" Shipping Master folder structure">
+    
+    </section>
+    <section id="install">
+      <h2>Setup the app</h2>
+      <hr>
+      <p>
+        </p>
+        <h2>Install at Local Server</h2> 
+        <hr>
+        <ul>
+          <li>Install XAMPP or WAMPP at your localserver</li>
+          <li>Open a directory under htdocs/www folder</li>
+          <li>Unzip downloaded file and upload to that directory</li>
+          <li>Run You XAMPP or WAMPP control Panel</li>
+          <li>Run Apache and MySQL</li>
+          <li>Go to app url: <strong>localhost/[your app folder nam]/install</strong>s</li>
+          <li>Installation prompt appeared and fill up the details of database</li>
+          <li>App will install automatically</li>
+          <li>After install delete install folder</li>
+          <li>And finally configure your HTACCESS FILE if you installl it in a subfolder</li>
+          <pre>
+            <IfModule mod_rewrite.c>
+              RewriteEngine on
+             <span class="text-danger"> RewriteBase /delivery/   //here delivery is the subfolder name you should change yours one here</span>
+              RewriteCond %{REQUEST_FILENAME} !-f
+              RewriteCond %{REQUEST_FILENAME} !-d
+              RewriteRule ^(.*)$ index.php/$1 [L]
+              </IfModule>
+              
+          </pre>
+          <li>Default <strong>Login User: admin password: admin</strong>s</li>
+        </ul>
+      <p></p>
+
+      <h2>INSTALLATION ON YOUR SERVER</h2>
+      <hr>
+      <ul>
+        <li>Open a directory under public_html or WWW directory</li>
+        <li>Unzip downloaded file and upload to that directory</li>
+        <li>Go to app url: <strong>[your server url]/install</strong>s</li>
+        <li>Installation prompt appeared and fill up the details of database</li>
+        <li>App will install automatically</li>
+        <li>After install delete install folder</li>
+        <li>And finally configure your HTACCESS FILE if you installl it in a subfolder</li>
+        <pre>
+          <IfModule mod_rewrite.c>
+            RewriteEngine on
+           <span class="text-danger"> RewriteBase /delivery/   //here delivery is the subfolder name you should change yours one here</span>
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteCond %{REQUEST_FILENAME} !-d
+            RewriteRule ^(.*)$ index.php/$1 [L]
+            </IfModule>
+            
+        </pre>
+        <li>Default <strong>Login User: admin password: admin</strong>s</li>
+      </ul>
+
+    </section>
+
+    <section id="users">
+      <h2>Default User</h2>
+      <hr>
+      <p>
+        A default user will be created when the database migrations run for the first time. <br>
+        This User will have the below login Credentials: <br>
+        <b>Username:</b> <kbd>admin</kbd><br>
+        <b>Password:</b> <kbd>admin</kbd><br>
+        You can edit the default user by through the Admin Panels Users section after logging in.
+      </p>
+     
+
+  </div>
+
+
+</body>
+</html>
