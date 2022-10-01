@@ -1,217 +1,138 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-$do = route(1);
+class Admin extends CI_Controller
+{
+	public function __construct()
+	{
+		parent::__construct();
+		if (!isset($this->session->id)) {
+			redirect('login');
+		}
+	}
 
-if ($do == '') {
-    $do = 'login-display';
-}
-switch ($do) {
-    case 'post':
-        $username = _post('username');
-        $password = _post('password');
+	public function index()
+	{
+		$data['title'] = "Dashboard";
+		$data['container'] = $this->load->view('dashboard/dashboard', '', true);
+		$this->load->view('master', $data);
+	}
 
-        $after = route(2);
-        $rd = U . $config['redirect_url'] . '/';
+	public function error()
+	{
+		$data['title'] = "Dashboard";
+		$data['container'] = $this->load->view('error', '', true);
+		$this->load->view('admin/master', $data);
+	}
 
-        if ($after != '') {
-            $after = str_replace('*', '/', $after);
+	/*
+	 * User Start
+	 */
 
-            $rd = U . $after . '/';
-        }
+	public function add_user()
+	{
+		$data['title'] = "User";
+		$data['container'] = $this->load->view('user/add_user', '', true);
+		$this->load->view('master', $data);
+	}
 
-        if ($username != '' and $password != '') {
-            $d = ORM::for_table('sys_users')
-                ->where('username', $username)
-                ->find_one();
-            if ($d) {
-                $d_pass = $d['password'];
-                if (Password::_verify($password, $d_pass) == true) {
-                    //Now check if OTP is enabled
-                    if ($d['otp'] == 'Yes') {
-                        //                Otp::make($d['id']);
-                        //                $_SESSION['tuid'] = $d['id'];
-                        //
-                        //                r2(U.'otp');
-                    } else {
-                        $_SESSION['uid'] = $d->id;
-                        $d->last_login = date('Y-m-d H:i:s');
-                        if (strlen($d->autologin) > 20) {
-                            $str = $d->autologin;
-                        } else {
-                            $str = Ib_Str::random_string(20) . $d->id;
-                        }
-                        $d->autologin = $str;
-                        $d->save();
-                        //login log
+	public function view_user()
+	{
+		$data['title'] = "User";
+		$value['users'] = $this->MAdmin->get_all_users();
+		$data['container'] = $this->load->view('user/view_user', $value, true);
+		$this->load->view('master', $data);
+	}
 
-                        setcookie('ib_at', $str, time() + 86400 * 180, "/"); // 86400 = 1 day
+	public function store_user()
+	{
+		$this->form_validation->set_rules('username', 'Username', 'trim|required|is_unique[tbl_admin.username]');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
+		$this->form_validation->set_rules('confirm_password', 'Password Confirmation', 'trim|required|matches[password]');
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[tbl_admin.email]');
+		$this->form_validation->set_rules('name', 'Name', 'required');
 
-                        _log(
-                            $_L['Login Successful'] . ' ' . $username,
-                            'Admin',
-                            $d['id']
-                        );
+		if ($this->form_validation->run()) {
+			$id = $this->MAdmin->store_user_record();
+			if ($id == "Please Upload Valid Image") {
+				$message = "Please Upload Valid Image";
+			} else {
+				//$this->MAdmin->store_admin_type_record($id);
+				$message = "Record Insert Successfully";
+			}
+			$this->session->set_flashdata('message', $message);
+			redirect('admin/add_user');
+		} else {
+			$this->add_user();
+		}
+	}
 
-                        setcookie("tplsub", 'default', time() + 15552000);
+	public function change_user_status($id, $status)
+	{
+		if ($id == 1) {
+			$this->session->set_flashdata('message', "You can't deactivate admin");
+		} else {
+			$this->MAdmin->change_user_status_record($id, $status);
+		}
+		redirect('admin/view_user');
+	}
 
-                        if (
-                            !isset($config['build']) or
-                            $config['build'] < $file_build
-                        ) {
-                            r2(U . 'update/');
-                        }
+	public function delete_user($id)
+	{
+		$message = $this->MAdmin->delete_user_record($id);
+		$this->session->set_flashdata('message', $message);
+		redirect('admin/view_user');
+	}
 
-                        //                if ((isset($routes['2'])) AND (($routes['2'] != ''))){
-                        //                    $rd =  $routes['2'];
-                        //                    exit($rd);
-                        //                }
+	public function edit_user($id)
+	{
+		$data['title'] = 'User';
+		$value['user'] = $this->MAdmin->get_admin_records($id);
+		$data['container'] = $this->load->view('user/edit_user', $value, true);
+		$this->load->view('master', $data);
+	}
 
-                        r2($rd);
-                    }
-                } else {
-                    _msglog('e', $_L['Invalid Username or Password']);
-                    _log($_L['Failed Login'] . ' ' . $username, 'Admin');
-                    r2(U . 'login');
-                }
-            } else {
-                _msglog('e', $_L['Invalid Username or Password']);
+	public function update_user()
+	{
+		/*$id = $this->session->userdata('id');
+		$type = $this->MAdmin->get_type_record($id);*/
+		$this->MAdmin->update_user_record();
+		$this->session->set_flashdata('message', 'Record Updated Successfully');
+		redirect('admin/view_user');
+		/*if ($type->admin_type == 1) {
+			$this->MAdmin->update_user_type_record();
+			$this->session->set_flashdata('message', 'Record Updated Successfully');
+			redirect('admin/view_user');
+		} else {
+			$this->session->set_flashdata('message', 'Record Updated Successfully');
+			redirect("admin/edit_user/$id");
+		}*/
+	}
 
-                r2(U . 'login/');
-            }
-        } else {
-            _msglog('e', $_L['Invalid Username or Password']);
+	/*
+	 * User End
+	 */
 
-            r2(U . 'login/');
-        }
+	/*
+	 * Settings Start
+	 */
 
-        break;
+	public function edit_settings()
+	{
+		$value['result'] = $this->MAdmin->get_settings_record();
+		$data['title'] = 'Settings';
+		$data['container'] = $this->load->view('settings/edit_settings', $value, true);
+		$this->load->view('master', $data);
+	}
 
-    case 'login-display':
-        // added param after
+	public function update_settings_record()
+	{
+		$this->MAdmin->update_settings_record();
+		$this->session->set_flashdata('message', 'Record Updated Successfully');
+		redirect('admin/edit_settings');
+	}
 
-        $ui->display('login.tpl');
-
-        break;
-
-    case 'forgot-pw':
-        $ui->display('forgot-pw.tpl');
-        break;
-
-    case 'forgot-pw-post':
-        $username = _post('username');
-        $d = ORM::for_table('sys_users')
-            ->where('username', $username)
-            ->find_one();
-        if ($d) {
-            $xkey = _raid('10');
-            $d->pwresetkey = $xkey;
-            $d->keyexpire = time() + 3600;
-
-            $d->save();
-
-            $e = ORM::for_table('sys_email_templates')
-                ->where('tplname', 'Admin:Password Change Request')
-                ->find_one();
-
-            $subject = new Template($e['subject']);
-            $subject->set('business_name', $config['CompanyName']);
-            $subj = $subject->output();
-            $message = new Template($e['message']);
-            $message->set('name', $d['fullname']);
-            $message->set('business_name', $config['CompanyName']);
-            $message->set(
-                'password_reset_link',
-                U . 'login/pwreset-validate/' . $d['id'] . '/token_' . $xkey
-            );
-            $message->set('username', $d['username']);
-            $message->set('ip_address', $_SERVER["REMOTE_ADDR"]);
-            $message_o = $message->output();
-            Notify_Email::_send(
-                $d['fullname'],
-                $d['username'],
-                $subj,
-                $message_o
-            );
-
-            _msglog('s', $_L['Check your email to reset Password']);
-
-            r2(U . 'login/');
-        } else {
-            _msglog('e', $_L['User Not Found'] . '!');
-
-            r2(U . 'login/forgot-pw/');
-        }
-
-        break;
-
-    case 'pwreset-validate':
-        $v_uid = $routes['2'];
-        $v_token = $routes['3'];
-        $v_token = str_replace('token_', '', $v_token);
-
-        $d = ORM::for_table('sys_users')->find_one($v_uid);
-
-        if ($d) {
-            $d_token = $d['pwresetkey'];
-            if ($v_token != $d_token) {
-                r2(U . 'login/', 'e', $_L['Invalid Password Reset Key'] . '!');
-            }
-            $keyexpire = $d['keyexpire'];
-            $ctime = time();
-            if ($ctime > $keyexpire) {
-                r2(U . 'login/', 'e', $_L['Password Reset Key Expired']);
-            }
-            $password = _raid('6');
-            $npassword = Password::_crypt($password);
-
-            $d->password = $npassword;
-            $d->pwresetkey = '';
-            $d->keyexpire = '0';
-            $d->save();
-
-            $e = ORM::for_table('sys_email_templates')
-                ->where('tplname', 'Admin:New Password')
-                ->find_one();
-
-            $subject = new Template($e['subject']);
-            $subject->set('business_name', $config['CompanyName']);
-            $subj = $subject->output();
-            $message = new Template($e['message']);
-            $message->set('name', $d['fullname']);
-            $message->set('business_name', $config['CompanyName']);
-            $message->set('login_url', U . 'login/');
-            $message->set('username', $d['username']);
-            $message->set('password', $password);
-            $message_o = $message->output();
-            Notify_Email::_send(
-                $d['fullname'],
-                $d['username'],
-                $subj,
-                $message_o
-            );
-
-            _msglog('s', $_L['Check your email to reset Password'] . '.');
-
-            r2(U . 'login/');
-        }
-
-        break;
-
-    case 'where':
-        r2(U . 'login');
-
-        break;
-
-    case 'after':
-        $after = route(2);
-
-        $ui->assign('after', $after);
-
-        $ui->display('login.tpl');
-
-        break;
-
-    default:
-        $ui->display('login.tpl');
-        break;
+	/*
+	 * Settings End
+	 */
 }
