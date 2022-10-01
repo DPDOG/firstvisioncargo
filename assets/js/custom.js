@@ -350,8 +350,6 @@
 		event.preventDefault();
 		return false;
 	});
-	// Buy Now Btn
-	$('body').append("<a href='https://themeforest.net/checkout/from_item/25660797?license=regular&support=bundle_6month&_ga=2.208753298.1657781501.1653794352-1356931366.1645330919' target='_blank' class='buy-now-btn'><img src='assets/img/envato.png' alt='envato'/>Buy Now</a>");
 })(jQuery);
 
 // function to set a given theme/color-scheme
